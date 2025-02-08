@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../component/Navbar";
+
 
 function Playlist() {
   const [playlists, setPlaylists] = useState([]);
@@ -73,13 +73,31 @@ function Playlist() {
               className="text-red-500 text-lg mb-4">
               ❌ กลับ
             </button>
+            
             <h2 className="text-2xl font-bold">{playlists[selectedPlaylist].name}</h2>
             <p>ระยะเวลารวม: {playlists[selectedPlaylist].totalDuration.hours.toString().padStart(2, '0')}:{playlists[selectedPlaylist].totalDuration.minutes.toString().padStart(2, '0')}:{playlists[selectedPlaylist].totalDuration.seconds.toString().padStart(2, '0')}</p>
 
             <ul>
               {playlists[selectedPlaylist].songs.map((song, idx) => (
-                <li key={idx} className="border-b py-2">
-                  {song.songName} - {song.artist} ({Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')})
+                <li key={idx} className="border-b p-4 flex ">
+
+                  {song.url && song.url !== "#" && (
+                    <iframe
+                      src={song.url}
+                      className="  border rounded-md h-fit w-fit"
+                      allow="autoplay"
+                    ></iframe>
+                  )}
+
+
+
+                  <div className="flex flex-1 justify-between items-center p-5">
+                    <p className="font-medium">{song.songName} - {song.artist}</p>
+                    <p className="text-gray-600">{Math.floor(song.duration / 60)}:
+                      {(song.duration % 60).toString().padStart(2, '0')}
+                    </p>
+                  </div>
+
                 </li>
               ))}
             </ul>

@@ -30,7 +30,7 @@ function Selector() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}DataBase/song.csv`);
+        const response = await fetch(`${import.meta.env.BASE_URL}DataBase/songV2.csv`);
         if (!response.ok) throw new Error("Failed to fetch CSV file");
 
         const reader = response.body.getReader();
@@ -151,7 +151,7 @@ function Selector() {
       let availableSongs = shuffleArray([...filteredData]);
   
       const minSongs = 5;
-      const maxSongs = Math.min(filteredData.length, 100);
+      const maxSongs = Math.min(filteredData.length, 80);
       const numSongs = Math.floor(Math.random() * (maxSongs - minSongs + 1)) + minSongs;
   
       for (let j = 0; j < numSongs && availableSongs.length > 0; j++) {
@@ -170,7 +170,10 @@ function Selector() {
   
       newPlaylists.push({
         name: `Play ${i + 1}`,
-        songs: playlistSongs,
+        songs: playlistSongs.map(song => ({
+          ...song,
+          url: song.url
+      })),
         totalDuration: playlistDuration,
         genres: [...new Set(playlistSongs.flatMap((song) => song.genre))],
       });
