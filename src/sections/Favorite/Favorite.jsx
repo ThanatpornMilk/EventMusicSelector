@@ -118,7 +118,7 @@ function Favorite() {
                   }}
                   className="text-red-500 hover:text-gray-500 transition"
                 >
-                  <FaHeart />
+                  {/* <FaHeart /> */}
                 </button>
               </div>
             ))
@@ -190,9 +190,16 @@ function Favorite() {
 
             <ul>
               {likedPlaylists[selectedPlaylist].songs.map((song, songIndex) => (
-                <li key={songIndex} className="border-b py-2 flex items-center relative">
-                  <div className="m-2 p-6 bg-blue-400 h-fit w-fit"></div>
-                  <span>
+                <li key={songIndex} className="border-b p-4 flex items-center relative">
+                  {song.url && song.url !== "#" && (
+                    <iframe
+                      src={song.url}
+                      className="border rounded-md h-fit w-fit"
+                      allow="autoplay"
+                    ></iframe>
+                  )}
+                  {/* <div className="m-2 p-6 bg-blue-400 h-fit w-fit"></div> */}
+                  <span className="p-4">
                     {song.songName} - {song.artist} ({Math.floor(song.duration / 60)}:
                     {(song.duration % 60).toString().padStart(2, '0')})
                   </span>

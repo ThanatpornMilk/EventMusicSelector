@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../../component/Navbar";
+import { FaHeart, FaRegHeart } from "react-icons/fa"; // นำเข้าไอคอนหัวใจ
 
 function Playlist() {
   const [playlists, setPlaylists] = useState([]);
@@ -19,18 +19,19 @@ function Playlist() {
   }, []);
 
   const handleLikePlaylist = (index) => {
-    const newLikedPlaylists = [...likedPlaylists];
-    const playlist = playlists[index];
-
-    if (newLikedPlaylists.includes(playlist)) {
-      newLikedPlaylists.splice(newLikedPlaylists.indexOf(playlist), 1);
+    const playlistId = playlists[index].name; // ใช้ชื่อเป็นตัวตรวจสอบ
+    let newLikedPlaylists = [...likedPlaylists];
+  
+    if (newLikedPlaylists.includes(playlistId)) {
+      newLikedPlaylists = newLikedPlaylists.filter(id => id !== playlistId);
     } else {
-      newLikedPlaylists.push(playlist);
+      newLikedPlaylists.push(playlistId);
     }
-
+  
     setLikedPlaylists(newLikedPlaylists);
     localStorage.setItem("likedPlaylist", JSON.stringify(newLikedPlaylists));
   };
+  
 
   return (
     <div className="text-black bg-gray-200 p-20">
@@ -47,20 +48,20 @@ function Playlist() {
             <div className="m-5">
               <h2 className="flex font-bold text-xl text-blue-500">{playlist.name}</h2>
               <p>จำนวนเพลง: {playlist.songs.length}</p>
-              <p>ระยะเวลา: {playlist.totalDuration.hours.toString().padStart(2, '0')}:{playlist.totalDuration.minutes.toString().padStart(2, '0')}:{playlist.totalDuration.seconds.toString().padStart(2, '0')}</p>
+              <p>ระยะเวลา: {String(playlist.totalDuration.hours).padStart(2, '0')}:{String(playlist.totalDuration.minutes).padStart(2, '0')}:{String(playlist.totalDuration.seconds).padStart(2, '0')}</p>
               <p>แนวเพลง: {playlist.genres.join(", ")}</p>
             </div>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleLikePlaylist(index);
-              }}
-              className={`text-end text-xl p-2 absolute top-4 right-4 rounded-full ${
-                likedPlaylists.includes(playlist) ? 'bg-red-500' : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-            >
-              {likedPlaylists.includes(playlist) ? '❤️' : '🤍'}
-            </button>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikePlaylist(index);
+                }}
+                className={`text-end text-xl p-2 absolute top-4 right-4 rounded-full ${
+                  likedPlaylists.includes(playlist) ? 'text-red-500' : 'text-gray-300 hover:text-gray-400'
+                }`}
+              >
+                {likedPlaylists.includes(playlist) ? <FaHeart /> : <FaRegHeart />} {/* ใช้ไอคอนแทนข้อความ */}
+              </button>
           </div>
         ))}
       </div>
@@ -68,26 +69,40 @@ function Playlist() {
       {selectedPlaylist !== null && (
         <div className="fixed inset-0 bg-[rgba(0,0,0,0.7)] flex items-center justify-center z-10">
           <div className="bg-white w-full max-w-4xl p-6 overflow-auto max-h-[70vh] rounded-md shadow-lg">
-            <button 
-              onClick={() => setSelectedPlaylist(null)} 
-              className="text-red-500 text-lg mb-4">
+            <button
+              onClick={() => setSelectedPlaylist(null)}
+              className="text-red-500 text-lg mb-4"
+            >
+              
               ❌ กลับ
             </button>
+
             <h2 className="text-2xl font-bold">{playlists[selectedPlaylist].name}</h2>
             <p>ระยะเวลารวม: {playlists[selectedPlaylist].totalDuration.hours.toString().padStart(2, '0')}:{playlists[selectedPlaylist].totalDuration.minutes.toString().padStart(2, '0')}:{playlists[selectedPlaylist].totalDuration.seconds.toString().padStart(2, '0')}</p>
 
             <ul>
               {playlists[selectedPlaylist].songs.map((song, idx) => (
-                <li key={idx} className="border-b py-2">
-                  {song.songName} - {song.artist} ({Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')})
+                <li key={idx} className="border-b p-4 flex">
+                  {song.url && song.url !== "#" && (
+                    <iframe
+                      src={song.url}
+                      className="border rounded-md h-fit w-fit"
+                      allow="autoplay"
+                    ></iframe>
+                  )}
+
+                  <div className="flex flex-1 justify-between items-center p-5">
+                    <p className="font-medium">{song.songName} - {song.artist}</p>
+                    <p className="text-gray-600">{Math.floor(song.duration / 60)}:
+                      {(song.duration % 60).toString().padStart(2, '0')}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
