@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa"; // นำเข้าไอคอนหัวใจ
+import { FaHeart, FaRegHeart } from "react-icons/fa"; 
 import { useNavigate } from "react-router-dom";
 
 function Playlist() {

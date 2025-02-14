@@ -10,18 +10,16 @@ function Selector() {
 
   const themes = ["Select","Wedding","Night party","Birthday party","Buddhist","Christian","Funeral","Luxury","Graduation party","Christmas party","Chinese New Year","Halloween party"];
   const genres = ["Select","Pop", "Jazz", "EDM", "Lo-Fi", "Classical", "Rock","Romantic", "Retro", "Hip-Hop", "ลูกทุ่ง", "ลูกกรุง", "เพื่อชีวิต", "Indie","Country", "Alternative", "Rap", "R&B", "Chanson", "Opera", "Tango","Bolero", "Swing", "Bossa Nova", "Soul", "Worship", "Hymn", "Carol","Disco", "Traditional", "Soundtrack", "Metal"];
-  const moods = ["Select","Fun", "Romantic", "Relax", "Uplifting", "Sad","Dance", "Celebratory", "Elegant", "Nostalgic", "Spooky", "Worshipful"];
   const languages = ["Select","English", "Thai", "Spanish", "French", "German", "Japanese", "Chinese", "Korean", "Instrumental", "ETC."];
 
 
   const [data, setData] = useState([]);
-const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState({
   artist: "",
   songName: "",
   language: "",
   themes: [],
   genres: [],
-  mood: [],
   minDuration: "",
 });
 
@@ -55,9 +53,6 @@ const [filters, setFilters] = useState({
                 : [],
               theme: song["ธีมงาน"] 
                 ? song["ธีมงาน"].split(",").map(t => t.trim()).filter(t => t !== "") 
-                : [],
-                mood: song["Mood"] && song["Mood"] !== "-" 
-                ? song["Mood"].split(",").map(m => m.trim()).filter(m => m !== "") 
                 : [],
               language: song["ภาษา"] || "Unknown",
             }));
@@ -148,7 +143,6 @@ const filteredData = data.filter((song) => {
       (filters.language === "" || song.language === filters.language) &&
       (filters.themes.length === 0 || filters.themes.every((theme) => song.theme.includes(theme))) &&
       (filters.genres.length === 0 || filters.genres.every((genre) => song.genre.includes(genre))) &&
-      (filters.mood.length === 0 || filters.mood.every((mood) => song.mood.includes(mood))) &&
       (filters.minDuration === "" || song.duration >= parseInt(filters.minDuration))
   );
 });
@@ -197,7 +191,6 @@ const filteredData = data.filter((song) => {
       }
   
       // ตรวจสอบว่า totalDuration เพียงพอหรือไม่
-  
       const playlistDuration = {
         hours: Math.floor(totalDuration / 3600),
         minutes: Math.floor((totalDuration % 3600) / 60),
@@ -261,24 +254,9 @@ const filteredData = data.filter((song) => {
                   ))}
                 </select>
               </div>
-            
-
-            {/* Mood */}
-              <div className="relative">
-                <label className="block mb-2 text-black font-semibold text-2xl">Mood</label>
-                <select 
-                  className="w-full p-4 border rounded-md text-black text-lg" 
-                  value={filters.mood[0] || ""} 
-                  onChange={(e) => setFilters({ ...filters, mood: e.target.value ? [e.target.value] : [] })}>
-                  {moods.map((mood, index) => (
-                    <option key={index} value={mood}>{mood}</option>
-                  ))}
-                </select>
-              </div>
-
 
             {/* Language */}
-            <div className="relative">
+            <div className="col-span-2 relative">
               <label className="block mb-2 text-black font-semibold text-2xl">Language</label>
               <select className="w-full p-4 border rounded-md text-black text-lg" value={filters.language} onChange={(e) => setFilters({ ...filters, language: e.target.value })}>
                 {languages.map((lang, index) => (
